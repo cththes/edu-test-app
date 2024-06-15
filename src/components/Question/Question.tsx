@@ -1,10 +1,11 @@
-import React from 'react';
+import React from "react";
+import styles from "./Question.module.css";
 
 interface QuestionProps {
   question: {
     id: string;
     text: string;
-    type: 'single' | 'multiple' | 'short' | 'long';
+    type: "single" | "multiple" | "short" | "long";
     options?: string[];
   };
   answer: string | string[];
@@ -16,22 +17,20 @@ const Question: React.FC<QuestionProps> = ({ question, answer, onAnswerChange })
     const target = e.target as HTMLInputElement;
     const { value, checked } = target;
 
-    if (question.type === 'single' || question.type === 'short' || question.type === 'long') {
+    if (question.type === "single" || question.type === "short" || question.type === "long") {
       onAnswerChange(value);
-    } else if (question.type === 'multiple' && Array.isArray(answer)) {
-      const updatedAnswer = checked
-        ? [...answer, value]
-        : answer.filter(a => a !== value);
+    } else if (question.type === "multiple" && Array.isArray(answer)) {
+      const updatedAnswer = checked ? [...answer, value] : answer.filter((a) => a !== value);
       onAnswerChange(updatedAnswer);
     }
   };
 
   return (
-    <div>
+    <div className={styles.question}>
       <h3>{question.text}</h3>
-      {question.type === 'single' && question.options && (
-        <div>
-          {question.options.map(option => (
+      {question.type === "single" && question.options && (
+        <div className={styles.options}>
+          {question.options.map((option) => (
             <label key={option}>
               <input
                 type="radio"
@@ -45,9 +44,9 @@ const Question: React.FC<QuestionProps> = ({ question, answer, onAnswerChange })
           ))}
         </div>
       )}
-      {question.type === 'multiple' && question.options && (
-        <div>
-          {question.options.map(option => (
+      {question.type === "multiple" && question.options && (
+        <div className={styles.options}>
+          {question.options.map((option) => (
             <label key={option}>
               <input
                 type="checkbox"
@@ -61,19 +60,10 @@ const Question: React.FC<QuestionProps> = ({ question, answer, onAnswerChange })
           ))}
         </div>
       )}
-      {question.type === 'short' && (
-        <input
-          type="text"
-          value={answer as string}
-          onChange={handleChange}
-        />
+      {question.type === "short" && (
+        <input type="text" value={answer as string} onChange={handleChange} />
       )}
-      {question.type === 'long' && (
-        <textarea
-          value={answer as string}
-          onChange={handleChange}
-        />
-      )}
+      {question.type === "long" && <textarea value={answer as string} onChange={handleChange} />}
     </div>
   );
 };

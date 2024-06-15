@@ -1,0 +1,20 @@
+.question {
+    margin-bottom: 20px;
+  }
+  
+  .question h3 {
+    font-size: 18px;
+    color: #333;
+  }
+  
+  .options label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .options input[type="radio"],
+  .options input[type="checkbox"] {
+    margin-right: 10px;
+  }
+  

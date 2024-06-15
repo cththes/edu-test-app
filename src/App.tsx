@@ -1,10 +1,13 @@
 import React from "react";
-import Test from "./components/Test/Test";
+import Test from "./components/TestComponent/TestComponent";
+import "./App.css"
 
-function App() {
-  return <div className="App">
-    <Test />
-  </div>;
-}
+const App: React.FC = () => {
+  return (
+    <div className="App">
+      <Test />
+    </div>
+  );
+};
 
 export default App;

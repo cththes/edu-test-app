@@ -1,0 +1,62 @@
+.container {
+    margin: 0 auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .header h1 {
+    font-size: 24px;
+    color: #333;
+  }
+  
+  .timer {
+    background-color: #333;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+  }
+  
+  .progress-bar {
+    display: flex;
+    margin-bottom: 20px;
+  }
+  
+  .progress-bar div {
+    flex: 1;
+    height: 4px;
+    background-color: #ddd;
+    margin: 0 2px;
+  }
+  
+  .progress-bar .active {
+    background-color: #d32f2f;
+  }
+  
+  .navigation-buttons {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  button {
+    background-color: #d32f2f;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  button:disabled {
+    background-color: #ddd;
+    cursor: not-allowed;
+  }
+  
