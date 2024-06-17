@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import { nextQuestion, prevQuestion, setAnswer, resetTest } from "../../store/testSlice";
@@ -12,13 +12,12 @@ const TestComponent: React.FC = () => {
   const answers = useSelector((state: RootState) => state.test.answers);
   const currentQuestion = questions[currentQuestionIndex];
 
-  const [testCompleted, setTestCompleted] = useState(false);
-
   const handleNext = () => {
     if (currentQuestionIndex < questions.length - 1) {
       dispatch(nextQuestion());
     } else {
-      setTestCompleted(true);
+      alert("Поздравляем, вы прошли тест!");
+      dispatch(resetTest());
     }
   };
 
@@ -30,9 +29,15 @@ const TestComponent: React.FC = () => {
     dispatch(setAnswer({ questionId: currentQuestion.id, answer }));
   };
 
-  const handleRetakeTest = () => {
+  const handleRetake = () => {
     dispatch(resetTest());
-    setTestCompleted(false);
+  };
+
+  const isNextDisabled = () => {
+    if (currentQuestion.type === "multiple") {
+      return !(answers[currentQuestion.id] && (answers[currentQuestion.id] as string[]).length > 0);
+    }
+    return false;
   };
 
   return (
@@ -45,34 +50,32 @@ const TestComponent: React.FC = () => {
         {questions.map((_, index) => (
           <div
             key={index}
-            className={`${styles.progress_segment} ${index <= currentQuestionIndex ? styles.active : ""}`}
+            className={`${styles.progress_bar_segment} ${index <= currentQuestionIndex ? styles.active : ""}`}
           ></div>
         ))}
       </div>
-      {testCompleted ? (
-        <div className={styles.test_completed}>
-          <h2>Поздравляем, вы прошли тест!</h2>
-          <button onClick={handleRetakeTest}>Пройти заново</button>
-        </div>
-      ) : (
-        <>
-          {currentQuestion && (
-            <Question
-              question={currentQuestion}
-              answer={answers[currentQuestion.id] || (currentQuestion.type === "multiple" ? [] : "")}
-              onAnswerChange={handleAnswerChange}
-            />
-          )}
-          <div className={styles.navigation_buttons}>
-            <button onClick={handlePrev} disabled={currentQuestionIndex === 0}>
-              Назад
-            </button>
-            <button onClick={handleNext}>
-              {currentQuestionIndex < questions.length - 1 ? "Вперед" : "Готово"}
-            </button>
-          </div>
-        </>
+      <div className={styles.question_number}>Вопрос {currentQuestionIndex + 1} из {questions.length}</div>
+      {currentQuestion && (
+        <Question
+          question={currentQuestion}
+          answer={answers[currentQuestion.id] || (currentQuestion.type === "multiple" ? [] : "")}
+          onAnswerChange={handleAnswerChange}
+        />
       )}
+      <div className={styles.navigation_buttons}>
+        <button onClick={handlePrev} disabled={currentQuestionIndex === 0}>
+          Назад
+        </button>
+        {currentQuestionIndex < questions.length - 1 ? (
+          <button onClick={handleNext} disabled={isNextDisabled()}>
+            Вперед
+          </button>
+        ) : (
+          <button onClick={handleNext} disabled={isNextDisabled()}>
+            Готово
+          </button>
+        )}
+      </div>
     </div>
   );
 };

@@ -13,13 +13,14 @@ interface QuestionProps {
 }
 
 const Question: React.FC<QuestionProps> = ({ question, answer, onAnswerChange }) => {
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const target = e.target as HTMLInputElement;
-    const { value, checked } = target;
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const target = event.target;
+    const { value } = target;
 
     if (question.type === "single" || question.type === "short" || question.type === "long") {
       onAnswerChange(value);
     } else if (question.type === "multiple" && Array.isArray(answer)) {
+      const { checked } = target as HTMLInputElement;
       const updatedAnswer = checked ? [...answer, value] : answer.filter((a) => a !== value);
       onAnswerChange(updatedAnswer);
     }
