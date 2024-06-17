@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import { nextQuestion, prevQuestion, setAnswer } from "../../store/testSlice";
@@ -12,8 +12,14 @@ const TestComponent: React.FC = () => {
   const answers = useSelector((state: RootState) => state.test.answers);
   const currentQuestion = questions[currentQuestionIndex];
 
+  const [isTestComplete, setIsTestComplete] = useState(false);
+
   const handleNext = () => {
-    dispatch(nextQuestion());
+    if (currentQuestionIndex < questions.length - 1) {
+      dispatch(nextQuestion());
+    } else {
+      setIsTestComplete(true);
+    }
   };
 
   const handlePrev = () => {
@@ -24,6 +30,14 @@ const TestComponent: React.FC = () => {
     dispatch(setAnswer({ questionId: currentQuestion.id, answer }));
   };
 
+  if (isTestComplete) {
+    return (
+      <div className={styles.container}>
+        <h1>Поздравляем, вы прошли тест!</h1>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -32,7 +46,7 @@ const TestComponent: React.FC = () => {
       </div>
       <div className={styles.progress_bar}>
         {questions.map((_, index) => (
-          <div key={index} className={index === currentQuestionIndex ? "active" : ""}></div>
+          <div key={index} className={index === currentQuestionIndex ? styles.active : ""}></div>
         ))}
       </div>
       {currentQuestion && (
@@ -46,8 +60,8 @@ const TestComponent: React.FC = () => {
         <button onClick={handlePrev} disabled={currentQuestionIndex === 0}>
           Назад
         </button>
-        <button onClick={handleNext} disabled={currentQuestionIndex === questions.length - 1}>
-          Вперед
+        <button onClick={handleNext}>
+          {currentQuestionIndex === questions.length - 1 ? "Готово" : "Вперед"}
         </button>
       </div>
     </div>
