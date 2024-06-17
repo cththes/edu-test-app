@@ -52,8 +52,12 @@ const testSlice = createSlice({
       const { questionId, answer } = action.payload;
       state.answers[questionId] = answer;
     },
+    resetTest(state) {
+      state.currentQuestionIndex = initialState.currentQuestionIndex;
+      state.answers = initialState.answers;
+    },
   },
 });
 
-export const { nextQuestion, prevQuestion, setAnswer } = testSlice.actions;
+export const { nextQuestion, prevQuestion, setAnswer, resetTest } = testSlice.actions;
 export default testSlice.reducer;

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/store";
-import { nextQuestion, prevQuestion, setAnswer } from "../../store/testSlice";
+import { nextQuestion, prevQuestion, setAnswer, resetTest } from "../../store/testSlice";
 import Question from "../Question/Question";
 import styles from "./TestComponent.module.css";
 
@@ -12,13 +12,13 @@ const TestComponent: React.FC = () => {
   const answers = useSelector((state: RootState) => state.test.answers);
   const currentQuestion = questions[currentQuestionIndex];
 
-  const [isTestComplete, setIsTestComplete] = useState(false);
+  const [testCompleted, setTestCompleted] = useState(false);
 
   const handleNext = () => {
     if (currentQuestionIndex < questions.length - 1) {
       dispatch(nextQuestion());
     } else {
-      setIsTestComplete(true);
+      setTestCompleted(true);
     }
   };
 
@@ -30,13 +30,10 @@ const TestComponent: React.FC = () => {
     dispatch(setAnswer({ questionId: currentQuestion.id, answer }));
   };
 
-  if (isTestComplete) {
-    return (
-      <div className={styles.container}>
-        <h1>Поздравляем, вы прошли тест!</h1>
-      </div>
-    );
-  }
+  const handleRetakeTest = () => {
+    dispatch(resetTest());
+    setTestCompleted(false);
+  };
 
   return (
     <div className={styles.container}>
@@ -46,24 +43,36 @@ const TestComponent: React.FC = () => {
       </div>
       <div className={styles.progress_bar}>
         {questions.map((_, index) => (
-          <div key={index} className={index === currentQuestionIndex ? styles.active : ""}></div>
+          <div
+            key={index}
+            className={`${styles.progress_segment} ${index <= currentQuestionIndex ? styles.active : ""}`}
+          ></div>
         ))}
       </div>
-      {currentQuestion && (
-        <Question
-          question={currentQuestion}
-          answer={answers[currentQuestion.id] || (currentQuestion.type === "multiple" ? [] : "")}
-          onAnswerChange={handleAnswerChange}
-        />
+      {testCompleted ? (
+        <div className={styles.test_completed}>
+          <h2>Поздравляем, вы прошли тест!</h2>
+          <button onClick={handleRetakeTest}>Пройти заново</button>
+        </div>
+      ) : (
+        <>
+          {currentQuestion && (
+            <Question
+              question={currentQuestion}
+              answer={answers[currentQuestion.id] || (currentQuestion.type === "multiple" ? [] : "")}
+              onAnswerChange={handleAnswerChange}
+            />
+          )}
+          <div className={styles.navigation_buttons}>
+            <button onClick={handlePrev} disabled={currentQuestionIndex === 0}>
+              Назад
+            </button>
+            <button onClick={handleNext}>
+              {currentQuestionIndex < questions.length - 1 ? "Вперед" : "Готово"}
+            </button>
+          </div>
+        </>
       )}
-      <div className={styles.navigation_buttons}>
-        <button onClick={handlePrev} disabled={currentQuestionIndex === 0}>
-          Назад
-        </button>
-        <button onClick={handleNext}>
-          {currentQuestionIndex === questions.length - 1 ? "Готово" : "Вперед"}
-        </button>
-      </div>
     </div>
   );
 };
